@@ -93,6 +93,7 @@ class DmWindow(Window):
             dmColorBlock = ','.join([f'{i%w}|{i//w}|{color}' for i in range(w*h)])
             x, y, success = self.__dm.FindMultiColor(*area, color, dmColorBlock, similarity, 0)
             if success:
+                colorBlock = f'{w}x{h}x{color}'
                 start = x, y
                 end = x+w, y+h
                 return Target(colorBlock, start, end, similarity)
