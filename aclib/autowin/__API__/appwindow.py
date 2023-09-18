@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 import ctypes
 from time import sleep
 from functools import wraps
+from typing import overload
 from aclib.builtins import decorator
 from aclib.winlib import winapi, wincon, wintype
 
@@ -34,7 +35,7 @@ class AppWindow(BaseWindow):
 
     __wndcount = 0
     __wndthread = 0
-    __wndevents: dict[int, dict[int, list[Callable]]] = {}  # {hwnd: {msg: callback}}
+    __wndevents: dict[int, dict[int, dict[Callable, None]]] = {}  # {hwnd: {msg: {callback: None}}}
 
     @classmethod
     def __wndproc(cls, hwnd, message, wparam, lparam):
@@ -110,12 +111,26 @@ class AppWindow(BaseWindow):
         if key == 'cursor':
             winapi.PostMessage(self.handle, wincon.WM_SETCURSOR, self.handle, winapi.MakeLong(wincon.HTCLIENT, wincon.WM_MOUSEMOVE))
 
-    def addmsglistener(self, msg: int | str, callback: Callable[[int, int], Any]):
+    def addmsglistener(self, msg: int | str, callback: Callable[[int, int, int, int], None]):
         if isinstance(msg, str):
             msg = getattr(wincon, f'WM_{msg.upper()}')
         if msg not in self.__listener:
-            self.__listener[msg] = []
-        self.__listener[msg].append(callback)
+            self.__listener[msg] = {}
+        self.__listener[msg][callback] = None
+
+    @overload
+    def removemsglistener(self, msg: int | str):
+        """remove all listener on msg"""
+    @overload
+    def removemsglistener(self, msg: int | str, callback: Callable[[int, int, int, int], None]):
+        """remove specified listener"""
+    def removemsglistener(self, msg: int | str, callback: Callable[[int, int, int, int], None] = None):
+        if isinstance(msg, str):
+            msg = getattr(wincon, f'WM_{msg.upper()}')
+        if msg in self.__listener:
+            self.__listener[msg].pop(callback, None)
+            if not callback or not self.__listener[msg]:
+                self.__listener.pop(msg)
 
     def create(self) -> Self:
         assert self.handle == 0
