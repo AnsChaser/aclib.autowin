@@ -148,7 +148,7 @@ class AppWindow(BaseWindow):
         if w == h and winapi.ParseLong(l)[0] == wincon.HTCLIENT:
             winapi.SetCursor(self.cursor)
 
-    def __on_paint(self, *args):
+    def __on_ncpaint(self, *args):
         winapi.Paint(self.handle, self.text, self.textcolor, self.textalign, self.font, self.fontsize, self.fillcolor)
 
     def __on_mousemove(self, *args):
