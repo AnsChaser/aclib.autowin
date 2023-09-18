@@ -8,6 +8,7 @@ if TYPE_CHECKING:
 import ctypes
 from time import sleep
 from functools import wraps
+from aclib.builtins import decorator
 from aclib.winlib import winapi, wincon, wintype
 
 from .basewindow import BaseWindow
@@ -83,19 +84,22 @@ class AppWindow(BaseWindow):
         for method in filter(lambda k: k.startswith('_AppWindow__on_'), AppWindow.__dict__.keys()):
             self.addmsglistener(getattr(wincon, f'WM_{method[15:].upper()}'), getattr(self, method))
 
-    def newoverlapped(parent: Self | int = 0, creator: Creator = None, render: Render = None):
-        return AppWindow.__new(wincon.WS_OVERLAPPEDWINDOW, parent, creator, render)
+    @decorator.instance_classmethod
+    def newoverlapped(parent: Self | int = 0, creator: Creator = None, render: Render = None) -> Self:
+        return parent.cls.__new(wincon.WS_OVERLAPPEDWINDOW, parent.self, creator, render)
 
-    def newpopup(parent: Self | int, creator: Creator = None, render: Render = None):
-        return AppWindow.__new(wincon.WS_POPUPWINDOW, parent, creator, render)
+    @decorator.instance_classmethod
+    def newpopup(parent: Self | int, creator: Creator = None, render: Render = None) -> Self:
+        return parent.cls.__new(wincon.WS_POPUPWINDOW, parent.self, creator, render)
 
-    def newchild(parent: Self | int, creator: Creator = None, render: Render = None):
-        return AppWindow.__new(wincon.WS_CHILDWINDOW, parent, creator, render)
+    @decorator.instance_classmethod
+    def newchild(parent: Self | int, creator: Creator = None, render: Render = None) -> Self:
+        return parent.cls.__new(wincon.WS_CHILDWINDOW, parent.self, creator, render)
 
     def __repr__(self):
         wndid = self.handle or hex(id(self))
         wndsummary = self.title or self.classname if self.handle else 'UNCREATED'
-        return f'AppWindow-{wndid} {wndsummary}'
+        return f'<{self.__class__.__name__}-{wndid} {wndsummary}>'
 
     def __setattr__(self, key, value):
         super().__setattr__(key, value)
