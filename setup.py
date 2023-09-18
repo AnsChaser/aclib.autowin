@@ -13,7 +13,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/AnsChaser/aclib.autowin',
     python_requires='>=3.6',
-    install_requires=['aclib.winlib'],
+    install_requires=['aclib.builtins', 'aclib.winlib'],
     extras_require={
         'cv': ['aclib.cv'],
         'dm': ['aclib.dm'],
