@@ -26,11 +26,11 @@ class CvWindow(Window):
     def _cvready(self) -> bool:
         return self.__cvready
 
-    def cvset(self, fontlib: str|None='', dotsetlib: str|None='', libscale=1.0) -> Self:
+    def cvset(self, fontlib: str|None='', dotsetlib: str|None='', flibscale=1.0, dlibscale=1.0) -> Self:
         if fontlib:
-            self.__cvfontlib = FontLib.fromfile(fontlib).scale(libscale)
+            self.__cvfontlib = FontLib.fromfile(fontlib).scale(flibscale)
         if dotsetlib:
-            self.__cvdotsetlib = DotsetLib.fromfile(dotsetlib).scale(libscale)
+            self.__cvdotsetlib = DotsetLib.fromfile(dotsetlib).scale(dlibscale)
         if fontlib is None:
             self.__cvfontlib = None
         if dotsetlib is None:

@@ -36,7 +36,7 @@ class DmWindow(Window):
         displaymode: Literal['dx', 'dx2', 'dx3', 'gdi', 'gdi2'] | None = '',
         fontlib: str | None = '',
         dotsetlib: str | None = '',
-        libscale: float = 1.0
+        dlibscale: float = 1.0
     ) -> Self:
         """传入空字符串时对应参数不做更改，传入None时清除已设置的值"""
         if displaymode:
@@ -49,7 +49,7 @@ class DmWindow(Window):
                     f'No such file or directory: {fontlib}')
             self.__dm.SetDict(0, fontlib)
         if dotsetlib:
-            self.__dmdotsetlib = DmDotsetLib.fromfile(dotsetlib).scale(libscale)
+            self.__dmdotsetlib = DmDotsetLib.fromfile(dotsetlib).scale(dlibscale)
         if displaymode is None:
             self.__dm.UnBindWindow()
             self.__dmready = False
