@@ -72,6 +72,20 @@ class BaseWindow(object):
     def threadprocessid(self) -> tuple[int, int]:
         return winapi.GetWindowThreadProcessId(self.handle)
 
+    @property
+    def creationtime(self) -> int:
+        hthread = winapi.OpenThreadHandle(self.threadid)
+        ctime = winapi.GetThreadTimes(hthread)[0]
+        winapi.CloseHandle(hthread)
+        return ctime
+
+    @property
+    def exittime(self) -> int:
+        hthread = winapi.OpenThreadHandle(self.threadid)
+        etime = winapi.GetThreadTimes(hthread)[1]
+        winapi.CloseHandle(hthread)
+        return etime
+
 
     def tolayeredwindow(self):
         winapi.LayerWindow(self.handle)
