@@ -314,13 +314,13 @@ class BaseWindow(object):
 
     def wheelup(self, pos, times=1):
         self.movemouse(pos)
-        lParam = winapi.MakeLong(*winapi.ClientToScreen(self.handle, pos))
+        lParam = winapi.MakeLong(*winapi.ClientToScreen(self.handle, *pos))
         for i in range(times):
             winapi.PostMessage(self.handle, wincon.WM_MOUSEWHEEL, wincon.WHEEL_DELTA, lParam)
 
     def wheeldown(self, pos, times=1):
         self.movemouse(pos)
-        lParam = winapi.MakeLong(*winapi.ClientToScreen(self.handle, pos))
+        lParam = winapi.MakeLong(*winapi.ClientToScreen(self.handle, *pos))
         for i in range(times):
             winapi.PostMessage(self.handle, wincon.WM_MOUSEWHEEL, -wincon.WHEEL_DELTA, lParam)
 
