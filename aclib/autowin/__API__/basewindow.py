@@ -127,6 +127,10 @@ class BaseWindow(object):
     def isforeground(self) -> bool:
         return self.handle == winapi.GetForegroundWindow()
 
+    @property
+    def istopmost(self) -> bool:
+        return winapi.IsWindowTopMost(self.handle)
+
 
     def close(self):
         winapi.CloseWindow(self.handle)
@@ -154,6 +158,9 @@ class BaseWindow(object):
 
     def normalieze(self):
         winapi.NormalizeWindow(self.handle)
+
+    def settopmost(self, topmost: bool):
+        winapi.SetWindowTopMost(self.handle, topmost)
 
 
     @property
