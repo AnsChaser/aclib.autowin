@@ -139,7 +139,7 @@ class AppWindow(BaseWindow):
         hparent = parent if isinstance(parent, int) else parent.handle
         dwstyle = args['wndtype'] | wincon.WS_VISIBLE * args['visible']
         dwexstyle = wincon.WS_EX_LAYERED
-        if not winapi.GetWindowClassInfo(args['clsname']).lpszClassName:
+        if not winapi.GetWindowClassInfo(args['clsname']).hInstance:
             winapi.RegisterWindowClass(args['clsname'], self.__wndproc)
         self.__checkthread()
         winapi.CreateWindowAsync(
