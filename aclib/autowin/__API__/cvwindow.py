@@ -164,7 +164,7 @@ class CvWindow(Window):
         charscale = 1.0,
         charset: str|Literal['']=None,
         lpoutput: list=None
-    ) -> list[str]:
+    ) -> list[Target]:
         texts = []
         if self.__cvfontlib is None:
             return texts
@@ -173,5 +173,5 @@ class CvWindow(Window):
             if screenshot is None: continue
             ocrgroups = screenshot.ocr(
                 self.__cvfontlib, matchcolor, similarity, txtdir, txtwrap, charscale, charset)
-            texts.extend(ocrgroup.join().name for ocrgroup in ocrgroups)
+            texts.extend(ocrgroup.join().offset(*area[:2]) for ocrgroup in ocrgroups)
         return texts
