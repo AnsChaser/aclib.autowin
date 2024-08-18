@@ -19,22 +19,26 @@ class CvWindow(Window):
     def _init_(self, hwnd: int):
         super()._init_(hwnd)
         self.__cvready = True
-        self.__cvfontlib: FontLib = None
-        self.__cvdotsetlib: DotsetLib = None
+        self.__cvfontlib = FontLib()
+        self.__cvdotsetlib = DotsetLib()
 
     @property
     def _cvready(self) -> bool:
         return self.__cvready
 
-    def cvset(self, fontlib: str|None='', dotsetlib: str|None='', flibscale=1.0, dlibscale=1.0) -> Self:
-        if fontlib:
-            self.__cvfontlib = FontLib.fromfile(fontlib).scale(flibscale)
-        if dotsetlib:
-            self.__cvdotsetlib = DotsetLib.fromfile(dotsetlib).scale(dlibscale)
+    FontLib = FontLib
+    DotsetLib = DotsetLib
+
+    def cvset(self, fontlib: FontLib|None=..., dotsetlib: DotsetLib|None=...) -> Self:
+        """传入None删除已设置的库，不传(或传入...)则不修改"""
+        if isinstance(fontlib, FontLib):
+            self.__cvfontlib = fontlib
+        if isinstance(dotsetlib, DotsetLib):
+            self.__cvdotsetlib = dotsetlib
         if fontlib is None:
-            self.__cvfontlib = None
+            self.__cvfontlib = FontLib()
         if dotsetlib is None:
-            self.__cvdotsetlib = None
+            self.__cvdotsetlib = DotsetLib()
         return self
 
     def cvcapture(self, area: _Area=None, savepath='') -> Image | None:
@@ -73,7 +77,7 @@ class CvWindow(Window):
         scale = 1.0,
         lpoutput: list=None
     ) -> Target:
-        if self.__cvdotsetlib is None:
+        if len(self.__cvdotsetlib) == 0:
             return Target.none
         for area in areas:
             screenshot = self.cvcapture(area)
@@ -94,7 +98,7 @@ class CvWindow(Window):
         lpoutput: list=None
     ) -> list[Target]:
         found = []
-        if self.__cvdotsetlib is None:
+        if len(self.__cvdotsetlib) == 0:
             return found
         for area in areas:
             screenshot = self.cvcapture(area)
@@ -116,7 +120,7 @@ class CvWindow(Window):
         charset: str|Literal['']=None,
         lpoutput: list=None
     ) -> Target:
-        if self.__cvfontlib is None:
+        if len(self.__cvfontlib) == 0:
             return Target.none
         for area in areas:
             screenshot = self.cvcapture(area)
@@ -140,7 +144,7 @@ class CvWindow(Window):
         lpoutput: list=None
     ) -> list[Target]:
         found = []
-        if self.__cvfontlib is None:
+        if len(self.__cvfontlib) == 0:
             return found
         for area in areas:
             screenshot = self.cvcapture(area)
