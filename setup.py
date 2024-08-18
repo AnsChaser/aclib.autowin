@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='aclib.autowin',
-    version='1.0.7',
+    version='1.1.0',
     author='AnsChaser',
     author_email='anschaser@163.com',
     description='auto window task',
