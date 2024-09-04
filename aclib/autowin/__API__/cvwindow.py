@@ -74,7 +74,7 @@ class CvWindow(Window):
         areas: _Area|_Areas=None,
         matchcolor: Literal[0,1]|HexColorRange=None,
         similarity = 0.9,
-        scale = 1.0,
+        capscale = 1.0,
         lpoutput: list=None
     ) -> Target:
         if len(self.__cvdotsetlib) == 0:
@@ -82,8 +82,10 @@ class CvWindow(Window):
         for area in areas:
             screenshot = self.cvcapture(area)
             if not screenshot: continue
+            if capscale != 1:
+                screenshot = screenshot.scale(capscale)
             target = screenshot.finddotset(
-                self.__cvdotsetlib, dotsets, matchcolor, similarity, scale)
+                self.__cvdotsetlib, dotsets, matchcolor, similarity)
             if target: return target.offset(*area[:2])
         return Target.none
 
@@ -93,7 +95,7 @@ class CvWindow(Window):
         areas: _Area|_Areas=None,
         matchcolor: Literal[0,1]|HexColorRange=None,
         similarity = 0.9,
-        scale = 1.0,
+        capscale = 1.0,
         ignore_overlaps = False,
         lpoutput: list=None
     ) -> list[Target]:
@@ -103,8 +105,10 @@ class CvWindow(Window):
         for area in areas:
             screenshot = self.cvcapture(area)
             if screenshot is None: continue
+            if capscale != 1:
+                screenshot = screenshot.scale(capscale)
             targets = screenshot.finddotsets(
-                self.__cvdotsetlib, dotsets, matchcolor, similarity, scale, ignore_overlaps)
+                self.__cvdotsetlib, dotsets, matchcolor, similarity, 1, ignore_overlaps)
             found.extend(target.offset(*area[:2]) for target in targets)
         return found
 
@@ -116,7 +120,7 @@ class CvWindow(Window):
         similarity = 0.9,
         txtdir: Literal[0,1]=0,
         txtwrap = True,
-        charscale = 1.0,
+        capscale = 1.0,
         charset: str|Literal['']=None,
         lpoutput: list=None
     ) -> Target:
@@ -125,8 +129,10 @@ class CvWindow(Window):
         for area in areas:
             screenshot = self.cvcapture(area)
             if screenshot is None: continue
+            if capscale != 1:
+                screenshot = screenshot.scale(capscale)
             target = screenshot.findtext(
-                self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, charscale, charset)
+                self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, 1, charset)
             if target: return target.offset(*area[:2])
         return Target.none
 
@@ -138,7 +144,7 @@ class CvWindow(Window):
         similarity = 0.9,
         txtdir: Literal[0,1]=0,
         txtwrap = True,
-        charscale = 1.0,
+        capscale = 1.0,
         charset: str|Literal['']=None,
         ignore_overlaps = False,
         lpoutput: list=None
@@ -149,8 +155,10 @@ class CvWindow(Window):
         for area in areas:
             screenshot = self.cvcapture(area)
             if screenshot is None: continue
+            if capscale != 1:
+                screenshot = screenshot.scale(capscale)
             targets = screenshot.findtexts(
-                self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, charscale, charset, ignore_overlaps)
+                self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, 1, charset, ignore_overlaps)
             found.extend(target.offset(*area[:2]) for target in targets)
         return found
 
@@ -161,7 +169,7 @@ class CvWindow(Window):
         similarity = 0.9,
         txtdir: Literal[0,1]=0,
         txtwrap = True,
-        charscale = 1.0,
+        capscale = 1.0,
         charset: str|Literal['']=None,
         lpoutput: list=None
     ) -> list[Target]:
@@ -171,7 +179,9 @@ class CvWindow(Window):
         for area in areas:
             screenshot = self.cvcapture(area)
             if screenshot is None: continue
+            if capscale != 1:
+                screenshot = screenshot.scale(capscale)
             ocrgroups = screenshot.ocr(
-                self.__cvfontlib, matchcolor, similarity, txtdir, txtwrap, charscale, charset)
+                self.__cvfontlib, matchcolor, similarity, txtdir, txtwrap, 1, charset)
             texts.extend(ocrgroup.join().offset(*area[:2]) for ocrgroup in ocrgroups)
         return texts
