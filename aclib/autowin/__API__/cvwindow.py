@@ -86,7 +86,7 @@ class CvWindow(Window):
                 screenshot = screenshot.scale(capscale)
             target = screenshot.finddotset(
                 self.__cvdotsetlib, dotsets, matchcolor, similarity)
-            if target: return target.offset(*area[:2])
+            if target: return target.scale(1/capscale).offset(*area[:2])
         return Target.none
 
     @findfunc
@@ -109,7 +109,7 @@ class CvWindow(Window):
                 screenshot = screenshot.scale(capscale)
             targets = screenshot.finddotsets(
                 self.__cvdotsetlib, dotsets, matchcolor, similarity, 1, ignore_overlaps)
-            found.extend(target.offset(*area[:2]) for target in targets)
+            found.extend(target.scale(1/capscale).offset(*area[:2]) for target in targets)
         return found
 
     @findfunc
@@ -133,7 +133,7 @@ class CvWindow(Window):
                 screenshot = screenshot.scale(capscale)
             target = screenshot.findtext(
                 self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, 1, charset)
-            if target: return target.offset(*area[:2])
+            if target: return target.scale(1/capscale).offset(*area[:2])
         return Target.none
 
     @findfunc
@@ -159,7 +159,7 @@ class CvWindow(Window):
                 screenshot = screenshot.scale(capscale)
             targets = screenshot.findtexts(
                 self.__cvfontlib, texts, matchcolor, similarity, txtdir, txtwrap, 1, charset, ignore_overlaps)
-            found.extend(target.offset(*area[:2]) for target in targets)
+            found.extend(target.scale(1/capscale).offset(*area[:2]) for target in targets)
         return found
 
     @findfunc
@@ -183,5 +183,5 @@ class CvWindow(Window):
                 screenshot = screenshot.scale(capscale)
             ocrgroups = screenshot.ocr(
                 self.__cvfontlib, matchcolor, similarity, txtdir, txtwrap, 1, charset)
-            texts.extend(ocrgroup.join().offset(*area[:2]) for ocrgroup in ocrgroups)
+            texts.extend(ocrgroup.join().scale(1/capscale).offset(*area[:2]) for ocrgroup in ocrgroups)
         return texts
